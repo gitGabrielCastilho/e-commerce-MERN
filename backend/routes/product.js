@@ -10,6 +10,6 @@ router.route('/admin/product/new').post(newProduct);
 
 router.route('/admin/product/:id').put(updateProduct);
 
-router.route('/admin/product/delete').delete(deleteProduct);
+router.route('/admin/product/:id').delete(deleteProduct);
 
 module.exports = router;
