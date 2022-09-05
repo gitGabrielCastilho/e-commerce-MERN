@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const User = require('../models/user');
 const sendToken = require('../utils/jwtToken');
 const sendEmail = require('../utils/sendEmail');
@@ -64,7 +65,7 @@ exports.forgotPassword = catchAsyncError(async(req, res, next) => {
 
     const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/password/reset/${resetToken}`;
 
-    const message = `Your password reset token is as follow:\n\nIf you have requested this email, then ignore it.`
+    const message = `Your password reset token is as follow:\n\n${resetUrl}\n\n If you have requested this email, then ignore it.`
 
     try {
 
@@ -103,4 +104,32 @@ exports.logout = catchAsyncError( async(req, res, next) =>{
         success: true,
         message: "Logged Out"
     })
+})
+
+exports.resetPassword = catchAsyncError(async(req, res, next) => {
+  
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex')
+
+    const user = await User.findOne({
+        resetPasswordToken,
+        resetPasswordExpires: {$gt: Date.now()}
+    })
+
+    if(!user) {
+        return next(new ErrorHandler('Password reset token invalid or has expired', 400))
+    }
+
+    if(req.body.password !== req.body.confirmPassword) {
+        return next(new ErrorHandler('Password does not match', 400))
+    }
+
+    user.password = req.body.password;
+    
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    sendToken(user, 200, res)
+
 })
