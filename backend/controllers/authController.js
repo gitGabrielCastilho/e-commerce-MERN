@@ -133,3 +133,52 @@ exports.resetPassword = catchAsyncError(async(req, res, next) => {
     sendToken(user, 200, res)
 
 })
+
+exports.getUserProfile =  catchAsyncError(async (req,res,next) =>{
+
+    const user = await User.findById(req.user.id)
+
+    res.status(200).json({
+        sucess: true,
+        user
+    })
+
+})
+
+
+exports.updatePassword =  catchAsyncError(async (req,res,next) =>{
+    const user = await User.findById(req.user.id).select('+password');
+
+    const isMatched = await user.comparePassword(req.body.oldPassword)
+
+    if(!isMatched) {
+        return next(new ErrorHandler('Old Password is incorrect', 400))
+    }
+
+
+    user.password = req.body.password;
+    await user.save()
+
+    sendToken(user, 200, res)
+
+})
+
+exports.updateProfile =  catchAsyncError(async (req,res,next) =>{
+
+    const newUserData = {
+        name: req.body.name,
+        email: req.body.email
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.id, newUserData, {
+        
+        new: true,
+        runValidators: true,
+        useFindAndModify: false
+    })
+
+    res.status(200).json({
+        success: true
+    })
+
+})
