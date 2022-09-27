@@ -80,9 +80,9 @@ exports.allOrders = catchAsyncErrors( async(req, res, next) => {
 
 })
 
-exports.allOrders = catchAsyncErrors( async(req, res, next) => {
+exports.updateOrder = catchAsyncErrors( async(req, res, next) => {
 
-    const orders = await Order.find(req.params.id)
+    const order = await Order.findById(req.params.id)
 
     if(order.orderStatus === 'Delivered') {
         return next(new ErrorHandler('You have already delivered this order', 400))
@@ -92,10 +92,41 @@ exports.allOrders = catchAsyncErrors( async(req, res, next) => {
         await updateStock(item.product, item.quantity)
     })
 
+    order.orderStatus = req.body.status,
+        order.deliveredAt = Date.now()
+
+
+    await order.save()
+
+
     res.status(200).json({
         success: true,
         totalAmount,
-        orders
+        order
     })
 
+})
+
+async function updateStock(id, quantity) {
+    const product = await Product.findById(id);
+
+    product.stock = product.stock - quantity;
+
+    await product.save({validateBeforeSave: false})
+}
+
+exports.deleteOrder = catchAsyncErrors( async(req, res, next) => {
+    const order = await Order.findById(req.params.id).populate('user', 'name email')
+
+    if(!order) {
+        return next(new ErrorHandler('No Order found with this ID', 404))
+    }
+
+
+    await order.remove()
+
+
+    res.status(200).json({
+        success: true
+        })
 })
