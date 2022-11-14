@@ -6,16 +6,18 @@ import Home from "./component/layout/Home";
 
 function App() {
   return (
-  <Router>  
-  <div className="App">
-    <Header/>
-    <Routes>
-      <Route path="/" element={<Home/>}/>
-    </Routes>
-    <Footer/>
-  </div>
-  </Router> 
-  );
+    <Router>
+    <div className="App">
+      <Header />
+      <div className="container container-fluid">
+        <Routes> 
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </div>
+      <Footer />
+    </div>
+  </Router>
+);
 }
 
 export default App;
