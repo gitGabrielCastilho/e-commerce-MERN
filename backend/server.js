@@ -9,7 +9,7 @@ const dotenv = require('dotenv');
 dotenv.config({path: 'backend/config/config.env'})
 
 process.on('uncaughtException',err => {
-    conso.log(`Error: ${err.stack}`);
+    console.log(`Error: ${err.stack}`);
     console.log('shutting down the server due to uncaughtException');
     server.close(() => { 
         process.exit(1);
