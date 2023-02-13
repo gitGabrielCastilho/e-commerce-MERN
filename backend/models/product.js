@@ -44,7 +44,7 @@ const productSchema = new mongoose.Schema({
                 'Accessories',
                 'Headphones',
                 'Food',
-                'Books',
+                "Books",
                 'Clothes/Shoes',
                 'Beauty/Health',
                 'Sports',
@@ -89,13 +89,11 @@ const productSchema = new mongoose.Schema({
             }
         }
     ],
-
     user: {
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: true
     },
-    
     createdAt: {
         type: Date,
         default: Date.now

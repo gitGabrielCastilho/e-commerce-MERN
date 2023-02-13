@@ -1,11 +1,10 @@
 const mongoose = require('mongoose')
 
-
 const orderSchema = mongoose.Schema({
-    shippingInfo:{
+    shippingInfo: {
         address: {
             type: String,
-            required : true
+            required: true
         },
         city: {
             type: String,
@@ -16,23 +15,22 @@ const orderSchema = mongoose.Schema({
             required: true
         },
         postalCode: {
-            type : Number,
-            required : true
+            type: String,
+            required: true
         },
         country: {
-           type: String,
-           required : true 
+            type: String,
+            required: true
         }
     },
-
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        required : true,
+        required: true,
         ref: 'User'
     },
     orderItems: [
         {
-            name:{
+            name: {
                 type: String,
                 required: true
             },
@@ -53,37 +51,36 @@ const orderSchema = mongoose.Schema({
                 required: true,
                 ref: 'Product'
             }
-            
-        } 
+        }
     ],
-
     paymentInfo: {
         id: {
             type: String
         },
         status: {
             type: String
-        },
+        }
     },
     paidAt: {
         type: Date
     },
-    itemsPrice : {
+
+    itemsPrice: {
         type: Number,
         required: true,
         default: 0.0
     },
-    taxPrice : {
+    taxPrice: {
         type: Number,
         required: true,
         default: 0.0
     },
-    shippingPrice : {
+    shippingPrice: {
         type: Number,
         required: true,
         default: 0.0
     },
-    totalPrice : {
+    totalPrice: {
         type: Number,
         required: true,
         default: 0.0
@@ -94,17 +91,13 @@ const orderSchema = mongoose.Schema({
         default: 'Processing'
     },
     deliveredAt: {
-        type: Date,
+        type: Date
     },
     createdAt: {
         type: Date,
         default: Date.now
     }
 
-
-
 })
-
-
 
 module.exports = mongoose.model('Order', orderSchema)
